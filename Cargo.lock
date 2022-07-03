@@ -671,6 +671,8 @@ name = "hw_rust"
 version = "0.1.0"
 dependencies = [
  "bracket-lib",
+ "bracket-random",
+ "bracket-terminal",
  "json",
  "regex",
  "time",

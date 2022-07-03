@@ -10,8 +10,8 @@ struct State {
     player: Player,
     frame_time: f32,
     mode: GameMode,
-    obstacle: Obstacle, 
-    score: i32
+    obstacle: Obstacle,
+    score: i32,
 }
 
 impl State {
@@ -42,14 +42,14 @@ impl State {
         //self.player.x, self.player.y, self.obstacle.x, self.obstacle.gap_y));
         self.obstacle.render(ctx, self.player.x);
 
-        if self.player.x == self.obstacle.x { 
-            self.score += 1; 
+        if self.player.x == self.obstacle.x {
+            self.score += 1;
             self.obstacle = Obstacle::new(self.player.x + SCREEN_WIDTH, self.score);
         }
 
-        if self.player.y >= SCREEN_HEIGHT || self.obstacle.hit_with_obstacle(&self.player) { 
+        if self.player.y >= SCREEN_HEIGHT || self.obstacle.hit_with_obstacle(&self.player) {
             self.mode = GameMode::End;
-        }        
+        }
     }
 
     fn dead(&mut self, ctx: &mut BTerm) {
@@ -104,25 +104,25 @@ impl Obstacle {
         }
     }
 
-    fn render(&mut self, ctx: &mut BTerm, player_x : i32) {
+    fn render(&mut self, ctx: &mut BTerm, player_x: i32) {
         let screen_x = self.x - player_x;
         let half_size = self.gap_size / 2;
-        
+
         for y in 0..self.gap_y - half_size {
             ctx.set(screen_x, y, RED, BLACK, to_cp437('|'));
         }
-        
-        for y in self.gap_y + half_size .. SCREEN_HEIGHT {
-            ctx.set(screen_x, y, RED, BLACK, to_cp437('|'));    
+
+        for y in self.gap_y + half_size..SCREEN_HEIGHT {
+            ctx.set(screen_x, y, RED, BLACK, to_cp437('|'));
         }
     }
-    fn hit_with_obstacle (&self, player: &Player) -> bool {
+    fn hit_with_obstacle(&self, player: &Player) -> bool {
         let half_size = self.gap_size / 2;
         let does_match_x = self.x == player.x + 5;
-        let does_match_y = player.y < (self.gap_y - half_size) || player.y > (self.gap_y + half_size);
-        return does_match_x && does_match_y; 
+        let does_match_y =
+            player.y < (self.gap_y - half_size) || player.y > (self.gap_y + half_size);
+        return does_match_x && does_match_y;
     }
-    
 }
 
 struct Player {
@@ -170,8 +170,14 @@ impl GameState for State {
     }
 }
 
-fn main() /*-> BError*/ {
+fn main() /*-> BError*/
+{
     sprite::main_run();
+    // match  {
+    //     Ok(),
+    //     Err() => println!("Error"),
+    // }
+
     // let context = BTermBuilder::simple80x50()
     //     .with_title("Term test")
     //     .build()?;
