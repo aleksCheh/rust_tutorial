@@ -1,3 +1,11 @@
+use jni::JNIEnv;
+
+// These objects are what you should use as arguments to your native
+// function. They carry extra lifetime information to prevent them escaping
+// this context and getting used after being GC'd.
+use jni::objects::{JClass, JString};
+use jni::sys::jstring;
+
 use bracket_lib::prelude::*;
 use std::io::{stdin, Read};
 mod sprite;
@@ -167,8 +175,8 @@ impl GameState for State {
         }
     }
 }
-
-fn main() -> BError
+#[no_mangle]
+pub extern "system" fn Java_TestInterop_tinTest(env: JNIEnv, o: JClass) -> jstring
 {
     //sprite::main_run();
     // match  {
@@ -178,6 +186,12 @@ fn main() -> BError
 
     let context = BTermBuilder::simple80x50()
         .with_title("Term test")
-        .build()?;
-    main_loop(context, State::new())
+        .build().unwrap();
+    main_loop(context, State::new()).unwrap();
+
+    let output = env.new_string(format!("Hello,!"))
+        .expect("Couldn't create java string!");
+
+    // Finally, extract the raw pointer to return.
+    output.into_inner()
 }
