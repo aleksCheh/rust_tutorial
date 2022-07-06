@@ -37,7 +37,7 @@ impl State {
         }
         self.player.render(ctx);
         ctx.print(0, 0, "Press SPACE to flap.");
-        ctx.print(0, 1, &format!("Score: {}", self.score));        
+        ctx.print(0, 1, &format!("Score: {}", self.score));
         self.obstacle.render(ctx, self.player.x);
 
         if self.player.x == self.obstacle.x {
@@ -168,16 +168,12 @@ impl GameState for State {
     }
 }
 
-fn main() -> BError
+fn main() /*-> BError*/
 {
-    //sprite::main_run();
-    // match  {
-    //     Ok(),
-    //     Err() => println!("Error"),
-    // }
+    sprite::main_run();
 
-    let context = BTermBuilder::simple80x50()
-        .with_title("Term test")
-        .build()?;
-    main_loop(context, State::new())
+    // let context = BTermBuilder::simple80x50()
+    //     .with_title("Term test")
+    //     .build()?;
+    // main_loop(context, State::new())
 }
