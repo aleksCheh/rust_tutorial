@@ -1,12 +1,12 @@
 use bracket_lib::prelude::*;
-use std::env::*;
-use std::io::{stdin, Read};
+//use std::env::*;
+//use std::io::{stdin, Read};
 use std::vec::*;
 
-use bracket_random::prelude::*;
-use bracket_terminal::prelude::*;
+// use bracket_random::prelude::*;
+// use bracket_terminal::prelude::*;
 
-const FRAME_FREQ_MS: f32 = 290.0;
+//const FRAME_FREQ_MS: f32 = 290.0;
 
 #[derive(Copy, Clone)]
 struct CharSprite {
@@ -47,7 +47,7 @@ impl Character {
     }
 
     fn render(&mut self, context: &mut bracket_lib::prelude::BTerm) {
-        context.cls();
+        
         self.ms_elapsed += context.frame_time_ms;
         if self.ms_elapsed >= self.anim_freq {
             self.current_frame += 1;
@@ -56,7 +56,6 @@ impl Character {
         if self.current_frame >= self.sprites.len() {
             self.current_frame = 0;
         }
-
         context.add_sprite(
             Rect::with_size(
                 self.x,
@@ -75,6 +74,7 @@ impl Character {
         )
     }
 }
+
 struct State {
     x: i32,
     frame_time: f32,
@@ -92,33 +92,34 @@ impl State {
             bg_chars: Vec::<Character>::new(),
         }
     }
-    fn setCharacterPos(&mut self, x: i32, y: i32) {
-        self.goblin.x = x;
-        self.goblin.y = y;
-    }
+    // fn setCharacterPos(&mut self, x: i32, y: i32) {
+    //     self.goblin.x = x;
+    //     self.goblin.y = y;
+    // }
 }
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
-        let mut ind = 0;
+        
         self.frame_time += ctx.frame_time_ms;
         if self.frame_time > 1000.0 {
             println!("Frame time ms: {}", ctx.frame_time_ms);
             self.frame_time = 0.0;
         }
+        ctx.cls();
         for bc in self.bg_chars.iter_mut() {
             bc.render(ctx);
         }
     }
 }
 
-pub fn main_run() -> BError {
+pub fn main() -> BError {
     let sp = SpriteSheet::new("resources/goblin.png")
         .add_sprite(Rect::with_size(0, 0, 65, 65))
         .add_sprite(Rect::with_size(65, 0, 65, 65))
         .add_sprite(Rect::with_size(130, 0, 65, 65))
         .add_sprite(Rect::with_size(195, 0, 65, 65));
     let bg = SpriteSheet::new("resources/back.png").add_sprite(Rect::with_size(0, 0, 640, 480));
-    let mut bt = BTermBuilder::new()
+    let bt = BTermBuilder::new()
         .with_sprite_sheet(sp)
         .with_sprite_sheet(bg)
         .with_sprite_console(640, 480, 0)
@@ -136,13 +137,13 @@ pub fn main_run() -> BError {
             global_index: 2,
         },
     ];
-    let mut curState = State::new();
-    curState.bg_chars.push(Character::new(10, 10, v.clone()));
-    curState.bg_chars.push(Character::new(70, 10, v));
+    let mut cur_state = State::new();
+    cur_state.bg_chars.push(Character::new(10, 10, v.clone()));
+    cur_state.bg_chars.push(Character::new(70, 10, v));
 
-    main_loop(bt, curState)
+    main_loop(bt, cur_state)
 }
 
-pub fn t_out() {
-    println!("Function from sprite.rs")
-}
+// pub fn t_out() {
+//     println!("Function from sprite.rs")
+// }
