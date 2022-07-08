@@ -170,7 +170,7 @@ impl GameState for State {
 
 fn main() /*-> BError*/
 {
-    sprite::main_run();
+    sprite::main().unwrap();
 
     // let context = BTermBuilder::simple80x50()
     //     .with_title("Term test")

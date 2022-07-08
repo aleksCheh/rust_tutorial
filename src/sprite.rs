@@ -99,12 +99,7 @@ impl State {
 }
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
-        
-        self.frame_time += ctx.frame_time_ms;
-        if self.frame_time > 1000.0 {
-            println!("Frame time ms: {}", ctx.frame_time_ms);
-            self.frame_time = 0.0;
-        }
+                       
         ctx.cls();
         for bc in self.bg_chars.iter_mut() {
             bc.render(ctx);

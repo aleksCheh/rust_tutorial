@@ -7,7 +7,7 @@ edition = "2021"
 
 [lib]
 name = "hw_rust"
-crate_type = ["cdylib"]
+crate_type = ["dylib"]
 
 [dependencies]
 bracket-lib = "~0.8.1"
