@@ -10,6 +10,7 @@ mod prelude {
     //pub const FRAME_DURATION: f32 = 60.0;
     pub use crate::dungeon_crawler::crawler_map::*;
     pub use crate::dungeon_crawler::player::*;
+    pub use crate::dungeon_crawler::crawler_map_builder::*;
 }
 
 use self::prelude::*;
