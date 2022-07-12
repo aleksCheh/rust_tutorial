@@ -1,10 +1,10 @@
 use bracket_lib::prelude::*;
 use std::io::{stdin, Read};
 mod sprite;
-
 const SCREEN_WIDTH: i32 = 80;
 const SCREEN_HEIGHT: i32 = 50;
 const FRAME_DURATION: f32 = 60.0;
+mod dungeon_crawler;
 
 struct State {
     player: Player,
@@ -168,10 +168,11 @@ impl GameState for State {
     }
 }
 
+
 fn main() /*-> BError*/
 {
-    sprite::main().unwrap();
-
+    //sprite::main().unwrap();
+    dungeon_crawler::main().unwrap();
     // let context = BTermBuilder::simple80x50()
     //     .with_title("Term test")
     //     .build()?;

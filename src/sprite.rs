@@ -47,7 +47,6 @@ impl Character {
     }
 
     fn render(&mut self, context: &mut bracket_lib::prelude::BTerm) {
-        
         self.ms_elapsed += context.frame_time_ms;
         if self.ms_elapsed >= self.anim_freq {
             self.current_frame += 1;
@@ -99,7 +98,6 @@ impl State {
 }
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
-                       
         ctx.cls();
         for bc in self.bg_chars.iter_mut() {
             bc.render(ctx);

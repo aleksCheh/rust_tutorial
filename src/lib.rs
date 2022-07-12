@@ -45,7 +45,7 @@ impl State {
         }
         self.player.render(ctx);
         ctx.print(0, 0, "Press SPACE to flap.");
-        ctx.print(0, 1, &format!("Score: {}", self.score));        
+        ctx.print(0, 1, &format!("Score: {}", self.score));
         self.obstacle.render(ctx, self.player.x);
 
         if self.player.x == self.obstacle.x {
@@ -176,8 +176,7 @@ impl GameState for State {
     }
 }
 #[no_mangle]
-pub extern "system" fn Java_TestInterop_tinTest(env: JNIEnv, o: JClass) -> jstring
-{
+pub extern "system" fn Java_TestInterop_tinTest(env: JNIEnv, o: JClass) -> jstring {
     //sprite::main_run();
     // match  {
     //     Ok(),
@@ -186,10 +185,12 @@ pub extern "system" fn Java_TestInterop_tinTest(env: JNIEnv, o: JClass) -> jstri
 
     let context = BTermBuilder::simple80x50()
         .with_title("Term test")
-        .build().unwrap();
+        .build()
+        .unwrap();
     main_loop(context, State::new()).unwrap();
 
-    let output = env.new_string(format!("Hello,!"))
+    let output = env
+        .new_string(format!("Hello,!"))
         .expect("Couldn't create java string!");
 
     // Finally, extract the raw pointer to return.
