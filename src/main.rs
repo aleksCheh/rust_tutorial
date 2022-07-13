@@ -168,7 +168,6 @@ impl GameState for State {
     }
 }
 
-
 fn main() /*-> BError*/
 {
     //sprite::main().unwrap();
