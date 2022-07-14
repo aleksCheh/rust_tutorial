@@ -171,7 +171,10 @@ impl GameState for State {
 fn main() /*-> BError*/
 {
     //sprite::main().unwrap();
-    dungeon_crawler::main().unwrap();
+    match dungeon_crawler::main() {
+        Ok(res) => println!("Ok"),
+        Err(e) => println!("Error: {}", e.to_string()),
+    }
     // let context = BTermBuilder::simple80x50()
     //     .with_title("Term test")
     //     .build()?;
