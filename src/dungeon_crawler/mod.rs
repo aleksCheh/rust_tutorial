@@ -1,8 +1,11 @@
 mod camera;
+mod components;
 mod crawler_map;
 mod crawler_map_builder;
 mod player;
-// use crawler_map::CrawlerMap;
+mod spawner;
+mod systems;
+
 mod prelude {
     pub use bracket_lib::prelude::*;
     pub use std::io::{stdin, Read};
@@ -10,28 +13,47 @@ mod prelude {
     pub const SCREEN_HEIGHT: i32 = 50;
     pub const DISPLAY_WIDTH: i32 = SCREEN_WIDTH / 2;
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
-    //pub const FRAME_DURATION: f32 = 60.0;
+
     pub use crate::dungeon_crawler::camera::*;
     pub use crate::dungeon_crawler::crawler_map::*;
     pub use crate::dungeon_crawler::crawler_map_builder::*;
     pub use crate::dungeon_crawler::player::*;
+
+    pub use crate::dungeon_crawler::components::*;
+    pub use crate::dungeon_crawler::spawner::*;
+    pub use crate::dungeon_crawler::systems::*;
+    pub use legion::systems::CommandBuffer;
+    pub use legion::world::SubWorld;
+    pub use legion::*;
 }
 
 use self::prelude::*;
-
+pub fn build_scheduler() -> Schedule {
+    return Schedule::builder().build();
+}
 struct State {
-    map: CrawlerMap,
-    player: Player,
-    camera: Camera,
+    ecs: World,
+    resources: Resources,
+    systems: Schedule,
+    // map: CrawlerMap,
+    // player: Player,
+    // camera: Camera,
 }
 impl State {
     fn new() -> Self {
+        let mut ecs = World::default();
+        let mut resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
+        #[allow(non_snake_case)]
         let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
+        spawn_player(&mut ecs, crawlerMapBuilder.player_start);
+        resources.insert(crawlerMapBuilder.map);
+        resources.insert(Camera::new(crawlerMapBuilder.player_start));
+
         State {
-            map: crawlerMapBuilder.map,
-            player: Player::new(crawlerMapBuilder.player_start),
-            camera: Camera::new(crawlerMapBuilder.player_start),
+            ecs: ecs,
+            resources: resources,
+            systems: build_scheduler(),
         }
     }
 }
@@ -42,9 +64,14 @@ impl GameState for State {
         ctx.cls();
         ctx.set_active_console(1);
         ctx.cls();
-        self.player.update(ctx, &mut self.map, &mut self.camera);
-        self.map.render(ctx, &self.camera);
-        self.player.render(ctx, &self.camera);
+        self.resources.insert(ctx.key);
+        self.systems
+            .execute(&mut self.ecs, &mut &mut self.resources);
+        render_draw_buffer(ctx).expect("Render Error!");
+
+        // self.player.update(ctx, &mut self.map, &mut self.camera);
+        // self.map.render(ctx, &self.camera);
+        // self.player.render(ctx, &self.camera);
     }
 }
 pub fn main() -> BError {
