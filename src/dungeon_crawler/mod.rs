@@ -2,7 +2,6 @@ mod camera;
 mod components;
 mod crawler_map;
 mod crawler_map_builder;
-//mod player;
 mod spawner;
 mod systems;
 
