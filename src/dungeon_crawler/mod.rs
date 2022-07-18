@@ -17,11 +17,11 @@ mod prelude {
     pub use crate::dungeon_crawler::camera::*;
     pub use crate::dungeon_crawler::crawler_map::*;
     pub use crate::dungeon_crawler::crawler_map_builder::*;
-
     pub use crate::dungeon_crawler::components::*;
     pub use crate::dungeon_crawler::spawner::*;
     pub use crate::dungeon_crawler::systems::*;
     pub use crate::dungeon_crawler::turn_state::*;
+    
     pub use legion::systems::CommandBuffer;
     pub use legion::world::SubWorld;
     pub use legion::*;
@@ -52,6 +52,7 @@ impl State {
         });
         resources.insert(crawlerMapBuilder.map);
         resources.insert(Camera::new(crawlerMapBuilder.player_start));
+        resources.insert(TurnState::AwaitingInput);
 
         State {
             ecs: ecs,
