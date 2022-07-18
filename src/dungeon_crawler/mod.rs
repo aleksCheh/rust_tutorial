@@ -4,6 +4,7 @@ mod crawler_map;
 mod crawler_map_builder;
 mod spawner;
 mod systems;
+mod turn_state;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
@@ -20,6 +21,7 @@ mod prelude {
     pub use crate::dungeon_crawler::components::*;
     pub use crate::dungeon_crawler::spawner::*;
     pub use crate::dungeon_crawler::systems::*;
+    pub use crate::dungeon_crawler::turn_state::*;
     pub use legion::systems::CommandBuffer;
     pub use legion::world::SubWorld;
     pub use legion::*;
