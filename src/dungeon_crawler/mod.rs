@@ -2,7 +2,7 @@ mod camera;
 mod components;
 mod crawler_map;
 mod crawler_map_builder;
-mod player;
+//mod player;
 mod spawner;
 mod systems;
 
@@ -17,7 +17,6 @@ mod prelude {
     pub use crate::dungeon_crawler::camera::*;
     pub use crate::dungeon_crawler::crawler_map::*;
     pub use crate::dungeon_crawler::crawler_map_builder::*;
-    pub use crate::dungeon_crawler::player::*;
 
     pub use crate::dungeon_crawler::components::*;
     pub use crate::dungeon_crawler::spawner::*;
@@ -27,10 +26,10 @@ mod prelude {
     pub use legion::*;
 }
 
+use std::thread::spawn;
+
 use self::prelude::*;
-pub fn build_scheduler() -> Schedule {
-    return Schedule::builder().build();
-}
+
 struct State {
     ecs: World,
     resources: Resources,
@@ -47,6 +46,9 @@ impl State {
         #[allow(non_snake_case)]
         let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
         spawn_player(&mut ecs, crawlerMapBuilder.player_start);
+        crawlerMapBuilder.rooms.iter().skip(1).map(|r| r.center()).for_each(|pos|{
+            spawn_enemy(&mut ecs,&mut rng, pos);
+        });
         resources.insert(crawlerMapBuilder.map);
         resources.insert(Camera::new(crawlerMapBuilder.player_start));
 
@@ -68,12 +70,9 @@ impl GameState for State {
         self.systems
             .execute(&mut self.ecs, &mut &mut self.resources);
         render_draw_buffer(ctx).expect("Render Error!");
-
-        // self.player.update(ctx, &mut self.map, &mut self.camera);
-        // self.map.render(ctx, &self.camera);
-        // self.player.render(ctx, &self.camera);
     }
 }
+
 pub fn main() -> BError {
     let context = BTermBuilder::new()
         .with_title("Dungeon Crawler")
