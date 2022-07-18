@@ -1,6 +1,6 @@
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum TurnState {
-    AwaitingInput, 
+    AwaitingInput,
     PlayerTurn,
-    MonsterTurn
+    MonsterTurn,
 }

@@ -15,13 +15,13 @@ mod prelude {
     pub const DISPLAY_HEIGHT: i32 = SCREEN_HEIGHT / 2;
 
     pub use crate::dungeon_crawler::camera::*;
+    pub use crate::dungeon_crawler::components::*;
     pub use crate::dungeon_crawler::crawler_map::*;
     pub use crate::dungeon_crawler::crawler_map_builder::*;
-    pub use crate::dungeon_crawler::components::*;
     pub use crate::dungeon_crawler::spawner::*;
     pub use crate::dungeon_crawler::systems::*;
     pub use crate::dungeon_crawler::turn_state::*;
-    
+
     pub use legion::systems::CommandBuffer;
     pub use legion::world::SubWorld;
     pub use legion::*;
@@ -34,7 +34,9 @@ use self::prelude::*;
 struct State {
     ecs: World,
     resources: Resources,
-    systems: Schedule,
+    input_systems: Schedule,
+    player_systems: Schedule,
+    monster_systems: Schedule,
     // map: CrawlerMap,
     // player: Player,
     // camera: Camera,
@@ -47,9 +49,14 @@ impl State {
         #[allow(non_snake_case)]
         let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
         spawn_player(&mut ecs, crawlerMapBuilder.player_start);
-        crawlerMapBuilder.rooms.iter().skip(1).map(|r| r.center()).for_each(|pos|{
-            spawn_enemy(&mut ecs,&mut rng, pos);
-        });
+        crawlerMapBuilder
+            .rooms
+            .iter()
+            .skip(1)
+            .map(|r| r.center())
+            .for_each(|pos| {
+                spawn_enemy(&mut ecs, &mut rng, pos);
+            });
         resources.insert(crawlerMapBuilder.map);
         resources.insert(Camera::new(crawlerMapBuilder.player_start));
         resources.insert(TurnState::AwaitingInput);
@@ -57,7 +64,9 @@ impl State {
         State {
             ecs: ecs,
             resources: resources,
-            systems: build_scheduler(),
+            input_systems: build_input_scheduler(),
+            player_systems: build_player_scheduler(),
+            monster_systems: build_monster_scheduler(),
         }
     }
 }
@@ -69,8 +78,18 @@ impl GameState for State {
         ctx.set_active_console(1);
         ctx.cls();
         self.resources.insert(ctx.key);
-        self.systems
-            .execute(&mut self.ecs, &mut &mut self.resources);
+        let current_state = self.resources.get::<TurnState>().unwrap().clone();
+        match current_state {
+            TurnState::AwaitingInput => self
+                .input_systems
+                .execute(&mut self.ecs, &mut self.resources),
+            TurnState::PlayerTurn => self
+                .player_systems
+                .execute(&mut self.ecs, &mut self.resources),
+            TurnState::MonsterTurn => self
+                .monster_systems
+                .execute(&mut self.ecs, &mut self.resources),
+        }
         render_draw_buffer(ctx).expect("Render Error!");
     }
 }
