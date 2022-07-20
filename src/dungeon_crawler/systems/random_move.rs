@@ -3,10 +3,7 @@ use crate::dungeon_crawler::prelude::*;
 #[system]
 #[write_component(Point)]
 #[read_component(MovingRandomly)]
-pub fn random_move(
-    ecs: &mut SubWorld,
-    commands: &mut CommandBuffer,
-) {
+pub fn random_move(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
     let mut movers = <(Entity, &mut Point, &MovingRandomly)>::query();
     movers.iter_mut(ecs).for_each(|(entity, pos, _)| {
         let mut rng = RandomNumberGenerator::new();
@@ -17,8 +14,13 @@ pub fn random_move(
             _ => Point::new(0, 1),
         } + *pos;
 
-        commands.push(((), WantsToMove{entity: *entity, destination}));
-            // *turn = TurnState::MonsterTurn;
-        });
-   
+        commands.push((
+            (),
+            WantsToMove {
+                entity: *entity,
+                destination,
+            },
+        ));
+        // *turn = TurnState::MonsterTurn;
+    });
 }
