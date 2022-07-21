@@ -25,3 +25,14 @@ pub fn tooltips(ecs: &SubWorld, #[resource] mouse_pos: &Point, #[resource] camer
         });
     draw_batch.submit(10100).expect("Batch Tooltip Error");
 }
+
+#[system]
+#[read_component(Point)]
+pub fn debug_ent(sub_world: &SubWorld) {
+    let mut i = 0;
+    let mut ent = <(Entity, &Point)>::query();
+    ent.iter(sub_world).for_each(|(e, p)| {
+        i += 1;
+        println!("counter: {}", i);
+    });
+}

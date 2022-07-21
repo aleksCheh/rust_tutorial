@@ -37,6 +37,7 @@ struct State {
     input_systems: Schedule,
     player_systems: Schedule,
     monster_systems: Schedule,
+    //debug_systems: Schedule,
     // map: CrawlerMap,
     // player: Player,
     // camera: Camera,
@@ -67,6 +68,7 @@ impl State {
             input_systems: build_input_scheduler(),
             player_systems: build_player_scheduler(),
             monster_systems: build_monster_scheduler(),
+            //debug_systems: build_dbg_scheduler(),
         }
     }
 }
@@ -83,6 +85,7 @@ impl GameState for State {
         ctx.set_active_console(0);
         self.resources.insert(Point::from_tuple(ctx.mouse_pos()));
         let current_state = self.resources.get::<TurnState>().unwrap().clone();
+        // self.debug_systems.execute(&mut self.ecs, &mut self.resources);
         match current_state {
             TurnState::AwaitingInput => self
                 .input_systems
