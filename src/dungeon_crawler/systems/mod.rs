@@ -1,3 +1,4 @@
+mod chasing;
 mod collisions;
 mod combat;
 mod end_turn;
@@ -8,9 +9,9 @@ mod movement;
 mod player_input;
 mod random_move;
 mod tooltips;
-mod chasing;
 
 pub use crate::dungeon_crawler::prelude::*;
+pub use chasing::*;
 pub use collisions::*;
 pub use end_turn::*;
 pub use entity_render::*;
@@ -20,7 +21,6 @@ pub use movement::*;
 pub use player_input::*;
 pub use random_move::*;
 pub use tooltips::*;
-pub use chasing::*;
 
 pub fn build_input_scheduler() -> Schedule {
     Schedule::builder()
@@ -50,7 +50,7 @@ pub fn build_player_scheduler() -> Schedule {
 
 pub fn build_monster_scheduler() -> Schedule {
     return Schedule::builder()
-        .add_system(random_move::random_move_system())
+        //.add_system(random_move::random_move_system())
         .add_system(chasing::chasing_system())
         .flush()
         .add_system(combat::combat_system())
@@ -63,7 +63,6 @@ pub fn build_monster_scheduler() -> Schedule {
         .add_system(end_turn::end_turn_system())
         .build();
 }
-
 
 #[allow(unused)]
 pub fn build_dbg_scheduler() -> Schedule {

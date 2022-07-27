@@ -5,7 +5,10 @@ use crate::dungeon_crawler::prelude::*;
 #[read_component(Player)]
 pub fn hud(ecs: &SubWorld) {
     let mut health_query = <&Health>::query().filter(component::<Player>());
-    let player_health = health_query.iter(ecs).nth(0).unwrap();
+    let player_health = match health_query.iter(ecs).nth(0){ 
+        Some(t) => t,
+        None => &Health{current: 20, max: 20},
+    };
     let mut draw_batch = DrawBatch::new();
     draw_batch.target(2);
     draw_batch.print_centered(1, "Explore the Dungeon. Cursor keys to move");

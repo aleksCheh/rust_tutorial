@@ -14,9 +14,9 @@ pub fn chasing(ecs: &SubWorld, commands: &mut CommandBuffer, #[resource] map: &C
     let player_idx = map_idx(player_pos.x, player_pos.y);
 
     let search_targets = vec![player_idx];
-    let dijkstra_map = DijkstraMap::new(SCREEN_WIDTH, SCREEN_HEIGHT,&search_targets ,map, 4096.0);
+    let dijkstra_map = DijkstraMap::new(SCREEN_WIDTH, SCREEN_HEIGHT, &search_targets, map, 1024.0);
 
-    movers.iter(ecs).for_each(|(entity, pos, _)|{
+    movers.iter(ecs).for_each(|(entity, pos, _)| {
         let idx = map_idx(pos.x, pos.y);
 
         if let Some(destination) = DijkstraMap::find_lowest_exit(&dijkstra_map, idx, map) {
@@ -28,23 +28,36 @@ pub fn chasing(ecs: &SubWorld, commands: &mut CommandBuffer, #[resource] map: &C
             };
 
             let mut attacked = false;
-            positions.iter(ecs)
-            .filter(|(_, target_pos, _)| {
-                **target_pos == destination })
-            .for_each(|(victim, _, _)|{
-                if ecs.entry_ref(*victim).unwrap().get_component::<Player>().is_ok() {
-                    commands.push(((),WantsToAttack{attacker: *entity, victim: *victim}));
+            positions
+                .iter(ecs)
+                .filter(|(_, target_pos, _)| **target_pos == destination)
+                .for_each(|(victim, _, _)| {
+                    if ecs.entry_ref(*victim)
+                        .unwrap()
+                        .get_component::<Player>()
+                        .is_ok()
+                    {                        
+                        commands.push((
+                            (),
+                            WantsToAttack {
+                                attacker: *entity,
+                                victim: *victim,
+                            },
+                        ));                        
+                    }
                     attacked = true;
-                } 
+                });
 
                 if !attacked {
-                    commands.push(((),WantsToMove{destination: destination, entity: *entity}));
+                    commands.push((
+                        (),
+                        WantsToMove {
+                            destination: destination,
+                            entity: *entity,
+                        },
+                    ));
                 }
-            });
-
-        }        
+                
+        }
     });
-    
-    
-
 }

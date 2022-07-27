@@ -8,8 +8,6 @@ use std::vec::*;
 
 //const FRAME_FREQ_MS: f32 = 290.0;
 
-
-
 #[derive(Copy, Clone)]
 struct CharSprite {
     pos: Rect,

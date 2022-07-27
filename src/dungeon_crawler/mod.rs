@@ -7,8 +7,8 @@ mod systems;
 mod turn_state;
 
 mod prelude {
-    pub use bracket_lib::prelude::*;
     pub use bracket_lib::prelude::Algorithm2D;
+    pub use bracket_lib::prelude::*;
     pub use std::io::{stdin, Read};
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 50;
@@ -72,6 +72,40 @@ impl State {
             //debug_systems: build_dbg_scheduler(),
         }
     }
+
+    fn game_over(&mut self, ctx: &mut BTerm)  {
+        ctx.set_active_console(2);
+        ctx.print_centered(23, "The End was always near");
+        ctx.print_centered(25, "Press Space to return");
+
+        let key = match ctx.key {
+            Some(it) => it,
+            _ => return,
+        };
+        println!("Before match");
+        match key {
+            VirtualKeyCode::Space => {
+                println!("Space");
+                self.ecs = World::default();
+                self.resources = Resources::default(); 
+                let mut rng = RandomNumberGenerator::new();
+                #[allow(non_snake_case)]
+                let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
+                crawlerMapBuilder
+                    .rooms
+                    .iter()
+                    .skip(1)
+                    .map(|r| r.center())
+                    .for_each(|pos| {
+                        spawn_enemy(&mut self.ecs, &mut rng, pos);
+                    });
+                self.resources.insert(crawlerMapBuilder.map);
+                self.resources.insert(Camera::new(crawlerMapBuilder.player_start));
+                self.resources.insert(TurnState::AwaitingInput);
+            },
+            _ => println!("another key"),
+        }
+    }
 }
 
 impl GameState for State {
@@ -97,6 +131,8 @@ impl GameState for State {
             TurnState::MonsterTurn => self
                 .monster_systems
                 .execute(&mut self.ecs, &mut self.resources),
+            TurnState::GameOver => {self
+                .game_over(ctx);},
         }
         render_draw_buffer(ctx).expect("Render Error!");
     }

@@ -63,34 +63,29 @@ impl CrawlerMap {
             None
         }
     }
-    pub fn valid_exit(&self, loc: &Point, delta: &Point)  -> Option<usize>{
+    pub fn valid_exit(&self, loc: &Point, delta: &Point) -> Option<usize> {
         let destination = *loc + *delta;
-        if self.in_bounds(destination) &&
-           self.can_enter_tile(destination) {
+        if self.in_bounds(destination) && self.can_enter_tile(destination) {
             let idx = self.point2d_to_index(destination);
             Some(idx)
-        }
-        else {
+        } else {
             None
         }
     }
-} 
+}
 
 impl Algorithm2D for CrawlerMap {
-    
     fn dimensions(&self) -> Point {
         Point::new(SCREEN_WIDTH, SCREEN_HEIGHT)
     }
 
     fn in_bounds(&self, p: Point) -> bool {
-        return self.in_bounds( p);
+        return self.in_bounds(p);
     }
 }
 
 impl BaseMap for CrawlerMap {
-
     fn get_available_exits(&self, _idx: usize) -> SmallVec<[(usize, f32); 10]> {
-
         let mut exits = SmallVec::new();
         let location = self.index_to_point2d(_idx);
         if let Some(idx) = self.valid_exit(&location, &Point::new(0, 1)) {
@@ -109,9 +104,7 @@ impl BaseMap for CrawlerMap {
     }
 
     fn get_pathing_distance(&self, _idx1: usize, _idx2: usize) -> f32 {
-        DistanceAlg::Pythagoras.distance2d(
-            self.index_to_point2d(_idx1),
-            self.index_to_point2d(_idx2)
-        )
+        DistanceAlg::Pythagoras
+            .distance2d(self.index_to_point2d(_idx1), self.index_to_point2d(_idx2))
     }
 }
