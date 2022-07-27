@@ -1,5 +1,5 @@
 use bracket_lib::prelude::*;
-use std::io::{stdin, Read};
+//use std::io::{stdin, Read};
 mod sprite;
 const SCREEN_WIDTH: i32 = 80;
 const SCREEN_HEIGHT: i32 = 50;
@@ -15,6 +15,7 @@ struct State {
 }
 
 impl State {
+    #[allow(unused)]
     fn new() -> Self {
         State {
             player: Player::new(5, 25),
@@ -172,7 +173,7 @@ fn main() /*-> BError*/
 {
     //sprite::main().unwrap();
     match dungeon_crawler::main() {
-        Ok(res) => println!("Ok"),
+        Ok(_res) => println!("Ok"),
         Err(e) => println!("Error: {}", e.to_string()),
     }
     // let context = BTermBuilder::simple80x50()

@@ -1,5 +1,3 @@
-use bracket_lib::prelude::*;
-
 use crate::dungeon_crawler::prelude::*;
 
 const NUM_TILES: usize = (SCREEN_HEIGHT * SCREEN_WIDTH) as usize;
@@ -13,6 +11,7 @@ pub enum TileType {
 pub fn map_idx(x: i32, y: i32) -> usize {
     ((y * SCREEN_WIDTH) + x) as usize
 }
+
 pub struct CrawlerMap {
     pub tiles: Vec<TileType>,
 }
@@ -64,4 +63,19 @@ impl CrawlerMap {
             None
         }
     }
+}
+
+impl Algorithm2D for CrawlerMap {
+    
+    fn dimensions(&self) -> Point {
+        Point::new(SCREEN_WIDTH, SCREEN_HEIGHT)
+    }
+
+    fn in_bounds(&self, p: Point) -> bool {
+        return self.in_bounds( p);
+    }
+}
+
+impl BaseMap for CrawlerMap {
+    
 }

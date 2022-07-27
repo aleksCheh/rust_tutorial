@@ -6,7 +6,7 @@ pub fn goblin() -> (i32, String, FontCharType) {
 pub fn orc() -> (i32, String, FontCharType) {
     (30, "Orc".to_string(), to_cp437('o'))
 }
-pub struct Spawner {}
+//pub struct Spawner {}
 pub fn spawn_player(ecs: &mut World, pos: Point) {
     ecs.push((
         Player,
@@ -40,5 +40,6 @@ pub fn spawn_enemy(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Point)
             current: hp,
         },
         Name(name),
+        ChasingPlayer,
     ));
 }

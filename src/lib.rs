@@ -3,11 +3,11 @@ use jni::JNIEnv;
 // These objects are what you should use as arguments to your native
 // function. They carry extra lifetime information to prevent them escaping
 // this context and getting used after being GC'd.
-use jni::objects::{JClass, JString};
+use jni::objects::{JClass};
 use jni::sys::jstring;
 
 use bracket_lib::prelude::*;
-use std::io::{stdin, Read};
+//use std::io::{stdin, Read};
 mod sprite;
 
 const SCREEN_WIDTH: i32 = 80;
@@ -176,6 +176,7 @@ impl GameState for State {
     }
 }
 #[no_mangle]
+#[allow(unused_variables)]
 pub extern "system" fn Java_TestInterop_tinTest(env: JNIEnv, o: JClass) -> jstring {
     //sprite::main_run();
     // match  {

@@ -28,6 +28,7 @@ pub fn tooltips(ecs: &SubWorld, #[resource] mouse_pos: &Point, #[resource] camer
 
 #[system]
 #[read_component(Point)]
+#[allow(unused_variables)]
 pub fn debug_ent(sub_world: &SubWorld) {
     let mut i = 0;
     let mut ent = <(Entity, &Point)>::query();

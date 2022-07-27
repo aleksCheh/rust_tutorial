@@ -61,6 +61,8 @@ pub fn build_monster_scheduler() -> Schedule {
         .build();
 }
 
+
+#[allow(unused)]
 pub fn build_dbg_scheduler() -> Schedule {
     Schedule::builder()
         .add_system(tooltips::debug_ent_system())

@@ -8,6 +8,8 @@ use std::vec::*;
 
 //const FRAME_FREQ_MS: f32 = 290.0;
 
+
+
 #[derive(Copy, Clone)]
 struct CharSprite {
     pos: Rect,
@@ -22,7 +24,7 @@ struct Character {
     ms_elapsed: f32,
     sprites: Vec<CharSprite>,
 }
-
+#[allow(dead_code)]
 impl Character {
     fn new(xn: i32, yn: i32, v: Vec<CharSprite>) -> Character {
         Character {
@@ -73,7 +75,7 @@ impl Character {
         )
     }
 }
-
+#[allow(dead_code)]
 struct State {
     x: i32,
     frame_time: f32,
@@ -81,6 +83,7 @@ struct State {
     frame_counter: i64,
     bg_chars: Vec<Character>,
 }
+#[allow(dead_code)]
 impl State {
     fn new() -> State {
         State {
@@ -104,7 +107,7 @@ impl GameState for State {
         }
     }
 }
-
+#[allow(dead_code)]
 pub fn main() -> BError {
     let sp = SpriteSheet::new("resources/goblin.png")
         .add_sprite(Rect::with_size(0, 0, 65, 65))

@@ -8,6 +8,7 @@ mod turn_state;
 
 mod prelude {
     pub use bracket_lib::prelude::*;
+    pub use bracket_lib::prelude::Algorithm2D;
     pub use std::io::{stdin, Read};
     pub const SCREEN_WIDTH: i32 = 80;
     pub const SCREEN_HEIGHT: i32 = 50;
@@ -27,7 +28,7 @@ mod prelude {
     pub use legion::*;
 }
 
-use std::thread::spawn;
+//use std::thread::spawn;
 
 use self::prelude::*;
 
