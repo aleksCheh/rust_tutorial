@@ -45,14 +45,14 @@ pub fn spawn_enemy(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Point)
 }
 
 pub fn spawn_amulet(ecs: &mut World, pos: Point) {
-    ecs.push(
-        (Item, AmuletOfYala,
+    ecs.push((
+        Item,
+        AmuletOfYala,
         pos,
-        Render{
-            color: ColorPair::new( WHITE, BLACK),
+        Render {
+            color: ColorPair::new(WHITE, BLACK),
             glyph: to_cp437('|'),
         },
-        Name("Amulet of Yala".to_string()))
-        
-    );
+        Name("Amulet of Yala".to_string()),
+    ));
 }

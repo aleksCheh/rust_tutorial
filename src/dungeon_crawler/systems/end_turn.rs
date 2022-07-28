@@ -1,10 +1,16 @@
-pub use crate::dungeon_crawler::*;
+pub use crate::dungeon_crawler::prelude::*;
 
 #[system]
 #[read_component(Player)]
 #[read_component(Health)]
+#[read_component(Point)]
+#[read_component(AmuletOfYala)]
 pub fn end_turn(ecs: &SubWorld, #[resource] state: &mut TurnState) {
-    let mut player_hp = <&Health>::query().filter(component::<Player>());
+    let (player_hp, player_pos) = <(&Health, &Point)>::query()
+        .filter(component::<Player>())
+        .iter(ecs)
+        .nth(0)
+        .unwrap();
     let current_state = state.clone();
     let mut new_state = match state {
         TurnState::AwaitingInput => return,
@@ -12,12 +18,15 @@ pub fn end_turn(ecs: &SubWorld, #[resource] state: &mut TurnState) {
         TurnState::MonsterTurn => TurnState::AwaitingInput,
         _ => current_state,
     };
-    player_hp.iter(ecs).for_each(|hp|
-    {
-        if hp.current < 1 {
-            new_state = TurnState::GameOver;
-        } 
-    });
 
+    let mut amulets = <&Point>::query().filter(component::<AmuletOfYala>());
+    let amulet_pos = amulets.iter(ecs).nth(0).unwrap();
+
+    if player_hp.current < 1 {
+        new_state = TurnState::GameOver;
+    }
+    if player_pos == amulet_pos {
+        new_state = TurnState::Victory;
+    }
     *state = new_state;
 }

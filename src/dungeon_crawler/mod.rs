@@ -74,7 +74,7 @@ impl State {
         }
     }
 
-    fn game_over(&mut self, ctx: &mut BTerm)  {
+    fn game_over(&mut self, ctx: &mut BTerm) {
         ctx.set_active_console(2);
         ctx.print_centered(23, "The End was always near");
         ctx.print_centered(25, "Press Space to return");
@@ -85,27 +85,47 @@ impl State {
         };
         println!("Before match");
         match key {
-            VirtualKeyCode::Space => {
-                println!("Space");
-                self.ecs = World::default();
-                self.resources = Resources::default(); 
-                let mut rng = RandomNumberGenerator::new();
-                #[allow(non_snake_case)]
-                let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
-                crawlerMapBuilder
-                    .rooms
-                    .iter()
-                    .skip(1)
-                    .map(|r| r.center())
-                    .for_each(|pos| {
-                        spawn_enemy(&mut self.ecs, &mut rng, pos);
-                    });
-                self.resources.insert(crawlerMapBuilder.map);
-                self.resources.insert(Camera::new(crawlerMapBuilder.player_start));
-                self.resources.insert(TurnState::AwaitingInput);
-            },
+            VirtualKeyCode::Space => self.reset_state(),
             _ => println!("another key"),
         }
+    }
+    fn victory(&mut self, ctx: &mut BTerm) {
+        ctx.set_active_console(2);
+        ctx.print_centered(23, "You found it!");
+        ctx.print_centered(25, "Press Space to triumph");
+
+        let key = match ctx.key {
+            Some(it) => it,
+            _ => return,
+        };
+
+        match key {
+            VirtualKeyCode::Space => self.reset_state(),
+            _ => println!("another key"),
+        }
+    }
+
+    fn reset_state(&mut self) {
+        println!("Space");
+        self.ecs = World::default();
+        self.resources = Resources::default();
+        let mut rng = RandomNumberGenerator::new();
+        #[allow(non_snake_case)]
+        let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
+        spawn_player(&mut self.ecs, crawlerMapBuilder.player_start);
+        spawn_amulet(&mut self.ecs, crawlerMapBuilder.amulet_start);
+        crawlerMapBuilder
+            .rooms
+            .iter()
+            .skip(1)
+            .map(|r| r.center())
+            .for_each(|pos| {
+                spawn_enemy(&mut self.ecs, &mut rng, pos);
+            });
+        self.resources.insert(crawlerMapBuilder.map);
+        self.resources
+            .insert(Camera::new(crawlerMapBuilder.player_start));
+        self.resources.insert(TurnState::AwaitingInput);
     }
 }
 
@@ -132,8 +152,12 @@ impl GameState for State {
             TurnState::MonsterTurn => self
                 .monster_systems
                 .execute(&mut self.ecs, &mut self.resources),
-            TurnState::GameOver => {self
-                .game_over(ctx);},
+            TurnState::GameOver => {
+                self.game_over(ctx);
+            }
+            TurnState::Victory => {
+                self.victory(ctx);
+            }
         }
         render_draw_buffer(ctx).expect("Render Error!");
     }
@@ -158,7 +182,11 @@ pub fn main() -> BError {
 mod test {
     #[test]
     fn run() {
-        println!("Max f32 value as value: {} and with & {}", f32::MAX, &f32::MAX);
+        println!(
+            "Max f32 value as value: {} and with & {}",
+            f32::MAX,
+            &f32::MAX
+        );
         super::main().unwrap()
     }
 }
