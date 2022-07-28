@@ -4,15 +4,24 @@ use crate::dungeon_crawler::prelude::*;
 #[read_component(Point)]
 #[read_component(Name)]
 #[read_component(Health)]
+#[read_component(Player)]
+#[read_component(FieldOfView)]
 pub fn tooltips(ecs: &SubWorld, #[resource] mouse_pos: &Point, #[resource] camera: &Camera) {
     let mut positions = <(Entity, &Point, &Name)>::query();
     let offset = Point::new(camera.left_x, camera.top_y);
     let map_pos = *mouse_pos + offset;
     let mut draw_batch = DrawBatch::new();
+
+    let player_fov = <&FieldOfView>::query()
+    .filter(component::<Player>())
+    .iter(ecs)
+    .nth(0)
+    .unwrap();
+
     draw_batch.target(2);
     positions
         .iter(ecs)
-        .filter(|(_, pos, _)| map_pos == **pos)
+        .filter(|(_, pos, _)| map_pos == **pos && player_fov.visible_tiles.contains(*pos))
         .for_each(|(entity, _, name)| {
             let screen_pos = *mouse_pos * 4;
             let display =
