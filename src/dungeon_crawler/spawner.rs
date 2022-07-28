@@ -1,10 +1,10 @@
 pub use crate::dungeon_crawler::prelude::*;
 
 pub fn goblin() -> (i32, String, FontCharType) {
-    (10, "Goblin".to_string(), to_cp437('g'))
+    (1, "Goblin".to_string(), to_cp437('g'))
 }
 pub fn orc() -> (i32, String, FontCharType) {
-    (30, "Orc".to_string(), to_cp437('o'))
+    (2, "Orc".to_string(), to_cp437('o'))
 }
 //pub struct Spawner {}
 pub fn spawn_player(ecs: &mut World, pos: Point) {
@@ -42,4 +42,17 @@ pub fn spawn_enemy(ecs: &mut World, rng: &mut RandomNumberGenerator, pos: Point)
         Name(name),
         ChasingPlayer,
     ));
+}
+
+pub fn spawn_amulet(ecs: &mut World, pos: Point) {
+    ecs.push(
+        (Item, AmuletOfYala,
+        pos,
+        Render{
+            color: ColorPair::new( WHITE, BLACK),
+            glyph: to_cp437('|'),
+        },
+        Name("Amulet of Yala".to_string()))
+        
+    );
 }

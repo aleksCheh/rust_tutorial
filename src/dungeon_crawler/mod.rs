@@ -51,6 +51,7 @@ impl State {
         #[allow(non_snake_case)]
         let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
         spawn_player(&mut ecs, crawlerMapBuilder.player_start);
+        spawn_amulet(&mut ecs, crawlerMapBuilder.amulet_start);
         crawlerMapBuilder
             .rooms
             .iter()
@@ -157,6 +158,7 @@ pub fn main() -> BError {
 mod test {
     #[test]
     fn run() {
+        println!("Max f32 value as value: {} and with & {}", f32::MAX, &f32::MAX);
         super::main().unwrap()
     }
 }

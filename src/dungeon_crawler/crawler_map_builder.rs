@@ -6,6 +6,7 @@ pub struct CrawlerMapBuilder {
     pub map: CrawlerMap,
     pub rooms: Vec<Rect>,
     pub player_start: Point,
+    pub amulet_start: Point,
 }
 impl CrawlerMapBuilder {
     #[allow(dead_code)]
@@ -81,6 +82,7 @@ impl CrawlerMapBuilder {
             map: CrawlerMap::new(),
             rooms: Vec::new(),
             player_start: Point::zero(),
+            amulet_start: Point::zero(),
         };
 
         cb.fill(TileType::Wall);
@@ -88,6 +90,24 @@ impl CrawlerMapBuilder {
         cb.build_corridors(rng);
         cb.player_start = cb.rooms[0].center();
 
+        let dijkstra_map = DijkstraMap::new(
+            SCREEN_WIDTH,
+            SCREEN_HEIGHT,
+            &vec![cb.map.point2d_to_index(cb.player_start)],
+            &cb.map,
+            1024.0,
+        );
+
+        const UNREACHABLE: &f32 = &f32::MAX;
+
+        cb.amulet_start = cb.map.index_to_point2d(
+            dijkstra_map.map.iter()
+            .enumerate()
+            .filter(|(_,dist)| *dist < UNREACHABLE)
+            .max_by(|a,b|{a.1.partial_cmp(b.1).unwrap()})
+            .unwrap().0
+        );
+        
         cb
     }
 }
