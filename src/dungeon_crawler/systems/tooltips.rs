@@ -13,10 +13,10 @@ pub fn tooltips(ecs: &SubWorld, #[resource] mouse_pos: &Point, #[resource] camer
     let mut draw_batch = DrawBatch::new();
 
     let player_fov = <&FieldOfView>::query()
-    .filter(component::<Player>())
-    .iter(ecs)
-    .nth(0)
-    .unwrap();
+        .filter(component::<Player>())
+        .iter(ecs)
+        .nth(0)
+        .unwrap();
 
     draw_batch.target(2);
     positions

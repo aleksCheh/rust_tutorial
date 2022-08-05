@@ -52,8 +52,11 @@ impl State {
         let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
         spawn_player(&mut ecs, crawlerMapBuilder.player_start);
         spawn_amulet(&mut ecs, crawlerMapBuilder.amulet_start);
-        crawlerMapBuilder.monster_spawn.iter().for_each(|pos| spawn_enemy(&mut ecs, &mut rng, *pos));
-       
+        crawlerMapBuilder
+            .monster_spawn
+            .iter()
+            .for_each(|pos| spawn_enemy(&mut ecs, &mut rng, *pos));
+
         resources.insert(crawlerMapBuilder.map);
         resources.insert(Camera::new(crawlerMapBuilder.player_start));
         resources.insert(TurnState::AwaitingInput);
@@ -108,7 +111,10 @@ impl State {
         let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
         spawn_player(&mut self.ecs, crawlerMapBuilder.player_start);
         spawn_amulet(&mut self.ecs, crawlerMapBuilder.amulet_start);
-        crawlerMapBuilder.monster_spawn.iter().for_each(|pos| spawn_enemy(&mut self.ecs, &mut rng, *pos));
+        crawlerMapBuilder
+            .monster_spawn
+            .iter()
+            .for_each(|pos| spawn_enemy(&mut self.ecs, &mut rng, *pos));
         self.resources.insert(crawlerMapBuilder.map);
         self.resources
             .insert(Camera::new(crawlerMapBuilder.player_start));

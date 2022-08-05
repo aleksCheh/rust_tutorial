@@ -4,7 +4,7 @@ use crate::dungeon_crawler::prelude::*;
 #[read_component(Point)]
 #[write_component(FieldOfView)]
 pub fn fov(ecs: &mut SubWorld, #[resource] map: &CrawlerMap) {
-    let mut views = <(&Point, &mut FieldOfView)>::query();    
+    let mut views = <(&Point, &mut FieldOfView)>::query();
     views
         .iter_mut(ecs)
         .filter(|(_, fov)| fov.is_dirty)

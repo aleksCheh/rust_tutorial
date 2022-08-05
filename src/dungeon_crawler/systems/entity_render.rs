@@ -15,7 +15,7 @@ pub fn entity_render(ecs: &mut SubWorld, #[resource] camera: &mut Camera) {
         .filter(component::<Player>())
         .iter(ecs)
         .nth(0)
-        .unwrap();     
+        .unwrap();
 
     <(&Point, &Render)>::query()
         .iter(ecs)

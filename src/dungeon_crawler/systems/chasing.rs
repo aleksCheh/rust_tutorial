@@ -18,7 +18,6 @@ pub fn chasing(ecs: &SubWorld, commands: &mut CommandBuffer, #[resource] map: &C
     let dijkstra_map = DijkstraMap::new(SCREEN_WIDTH, SCREEN_HEIGHT, &search_targets, map, 1024.0);
 
     movers.iter(ecs).for_each(|(entity, pos, _, fov)| {
-        
         if !fov.visible_tiles.contains(player_pos) {
             return;
         }

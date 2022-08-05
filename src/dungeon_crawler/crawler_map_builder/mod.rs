@@ -1,12 +1,13 @@
+pub mod cellular_automata;
+pub mod drunkards_walk;
 pub mod empty;
 
 use crate::dungeon_crawler::prelude::*;
-
-use self::empty::EmptyArchitect;
+use cellular_automata::*;
 
 const NUM_ROOMS: usize = 20;
 trait MapArchitect {
-    fn new(&mut self, rng: &mut RandomNumberGenerator)-> CrawlerMapBuilder;
+    fn new(&mut self, rng: &mut RandomNumberGenerator) -> CrawlerMapBuilder;
 }
 pub struct CrawlerMapBuilder {
     pub map: CrawlerMap,
@@ -84,12 +85,13 @@ impl CrawlerMapBuilder {
             }
         }
     }
+
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
-        let mut empty_architect = EmptyArchitect{};
+        let mut empty_architect = CellularAutomataBuilder {};
         empty_architect.new(rng)
     }
-    
-    pub fn find_most_distant(&self) -> Point{
+
+    pub fn find_most_distant(&self) -> Point {
         let dijkstra_map = DijkstraMap::new(
             SCREEN_WIDTH,
             SCREEN_HEIGHT,
@@ -100,7 +102,7 @@ impl CrawlerMapBuilder {
 
         const UNREACHABLE: &f32 = &f32::MAX;
 
-       self.map.index_to_point2d(
+        self.map.index_to_point2d(
             dijkstra_map
                 .map
                 .iter()
@@ -110,5 +112,37 @@ impl CrawlerMapBuilder {
                 .unwrap()
                 .0,
         )
+    }
+    pub fn gen_clean_builder() -> CrawlerMapBuilder {
+        CrawlerMapBuilder {
+            map: CrawlerMap::new(),
+            rooms: Vec::new(),
+            monster_spawn: Vec::new(),
+            player_start: Point::zero(),
+            amulet_start: Point::zero(),
+        }
+    }
+    fn spawn_monsters(&self, start: &Point, rng: &mut RandomNumberGenerator) -> Vec<Point> {
+        const NUM_MONSTERS: usize = 50;
+        let mut spawnable_tiles: Vec<Point> = self
+            .map
+            .tiles
+            .iter()
+            .enumerate()
+            .filter(|(idx, t)| {
+                **t == TileType::Floor
+                    && DistanceAlg::Pythagoras.distance2d(*start, self.map.index_to_point2d(*idx))
+                        > 10.0
+            })
+            .map(|(idx, _)| self.map.index_to_point2d(idx))
+            .collect();
+
+        let mut spawns = Vec::new();
+        for _ in 0..NUM_MONSTERS {
+            let target_index = rng.random_slice_index(&spawnable_tiles).unwrap();
+            spawns.push(spawnable_tiles[target_index].clone());
+            spawnable_tiles.remove(target_index);
+        }
+        spawns
     }
 }
