@@ -1,10 +1,17 @@
+pub mod empty;
+
 use crate::dungeon_crawler::prelude::*;
 
-const NUM_ROOMS: usize = 20;
+use self::empty::EmptyArchitect;
 
+const NUM_ROOMS: usize = 20;
+trait MapArchitect {
+    fn new(&mut self, rng: &mut RandomNumberGenerator)-> CrawlerMapBuilder;
+}
 pub struct CrawlerMapBuilder {
     pub map: CrawlerMap,
     pub rooms: Vec<Rect>,
+    pub monster_spawn: Vec<Point>,
     pub player_start: Point,
     pub amulet_start: Point,
 }
@@ -78,29 +85,22 @@ impl CrawlerMapBuilder {
         }
     }
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
-        let mut cb = Self {
-            map: CrawlerMap::new(),
-            rooms: Vec::new(),
-            player_start: Point::zero(),
-            amulet_start: Point::zero(),
-        };
-
-        cb.fill(TileType::Wall);
-        cb.build_randorm_rooms(rng);
-        cb.build_corridors(rng);
-        cb.player_start = cb.rooms[0].center();
-
+        let mut empty_architect = EmptyArchitect{};
+        empty_architect.new(rng)
+    }
+    
+    pub fn find_most_distant(&self) -> Point{
         let dijkstra_map = DijkstraMap::new(
             SCREEN_WIDTH,
             SCREEN_HEIGHT,
-            &vec![cb.map.point2d_to_index(cb.player_start)],
-            &cb.map,
+            &vec![self.map.point2d_to_index(self.player_start)],
+            &self.map,
             1024.0,
         );
 
         const UNREACHABLE: &f32 = &f32::MAX;
 
-        cb.amulet_start = cb.map.index_to_point2d(
+       self.map.index_to_point2d(
             dijkstra_map
                 .map
                 .iter()
@@ -109,8 +109,6 @@ impl CrawlerMapBuilder {
                 .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
                 .unwrap()
                 .0,
-        );
-
-        cb
+        )
     }
 }
