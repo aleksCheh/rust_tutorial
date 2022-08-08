@@ -40,8 +40,25 @@ impl DrunkardsWalkArchitect {
 }
 impl MapArchitect for DrunkardsWalkArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> CrawlerMapBuilder {
-
+        println!("Drunkards Walk new");
         let mut map_builder = CrawlerMapBuilder::gen_clean_builder();
+
+        map_builder.fill(TileType::Wall);
+        let center = Point::new(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        self.drunkard(&center, rng, &mut map_builder.map);
+
+        while map_builder.map.tiles.iter().filter(|t| **t == TileType::Floor).count() < NUM_FLOOR
+        {
+            self.drunkard(&Point::new(rng.range(0, SCREEN_WIDTH), rng.range(0, SCREEN_HEIGHT)), rng, &mut map_builder.map);
+            let dijkstra_map = DijkstraMap::new(SCREEN_WIDTH, SCREEN_HEIGHT, &vec![map_builder.map.point2d_to_index(center)],
+            &map_builder.map, 1024.0);
+            dijkstra_map.map.iter().enumerate().filter(|(_,distance)| *distance < &2000.0).for_each(|(idx, _)| map_builder.map.tiles[idx] = TileType::Floor);
+
+        }
+
+        map_builder.monster_spawn = map_builder.spawn_monsters(&center, rng);
+        map_builder.player_start = center;
+        map_builder.amulet_start = map_builder.find_most_distant();
 
         map_builder
     }
