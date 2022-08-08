@@ -7,8 +7,8 @@ impl CellularAutomataBuilder {
     fn random_noise_map(&mut self, rng: &mut RandomNumberGenerator, map: &mut CrawlerMap) {                
         map.tiles.iter_mut().for_each(|t| {
             let roll = rng.range(0, 100);
-            if roll > 55 {*t = TileType::Floor;}
-            else {*t = TileType::Wall;}
+            if roll > 55 {*t = TileType::Wall;}
+            else {*t = TileType::Floor;}
         });
     }
 
@@ -31,8 +31,13 @@ impl CellularAutomataBuilder {
             for y in 1 .. SCREEN_HEIGHT - 1 {
                 let n = self.count_neighbors(x, y, map);
                 let idx = map_idx(x, y);
-                if n > 4 || n == 0 {
+                //live - wall
+                //dies - floor
+                if ((n == 2 || n == 3) && new_tiles[idx] == TileType::Wall) 
+                    || (n > 3 && new_tiles[idx] == TileType::Floor) {
+
                     new_tiles[idx] = TileType::Wall;
+                    
                 } else {
                     new_tiles[idx] = TileType::Floor;
                 }
@@ -58,7 +63,7 @@ impl MapArchitect for CellularAutomataBuilder {
         println!("Cellular Automata Creation");
         let mut map_builder = CrawlerMapBuilder::gen_clean_builder();
         self.random_noise_map(rng, &mut map_builder.map);
-        for _ in 0 .. 20 {
+        for _ in 0..2 {
             self.iteration(&mut map_builder.map);
         }
         let start = self.find_start(&map_builder.map);

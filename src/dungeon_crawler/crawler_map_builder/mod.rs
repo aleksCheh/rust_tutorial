@@ -29,15 +29,15 @@ impl CrawlerMapBuilder {
 
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
 
-            let mut architect: Box<dyn MapArchitect> = match rng.range(0,3) {
-                0 => Box::new(DrunkardsWalkArchitect{}),
-                1 => Box::new(RoomArchitect{}),
-                _ => Box::new(CellularAutomataBuilder{}),
-            };
+            // let mut architect: Box<dyn MapArchitect> = match rng.range(0,3) {
+            //     0 => Box::new(DrunkardsWalkArchitect{}),
+            //     1 => Box::new(RoomArchitect{}),
+            //     _ => Box::new(CellularAutomataBuilder{}),
+            // };
             
-            let mut mb =  architect.new(rng);
-            //let mut mb = RoomArchitect{};
-            mb
+            // let mut mb =  architect.new(rng);
+            let mut mb = CellularAutomataBuilder{}; 
+            mb.new(rng)
         }
     
 
