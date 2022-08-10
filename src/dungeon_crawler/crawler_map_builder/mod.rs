@@ -3,14 +3,19 @@ mod drunkards_walk;
 mod empty;
 mod prefab;
 mod room_architect;
+mod themes;
 
 use crate::dungeon_crawler::prelude::*;
 use cellular_automata::*;
 use drunkards_walk::*;
 use room_architect::*;
 
-use self::prefab::apply_prefab;
 
+use self::{prefab::apply_prefab, themes::{DungeonTheme, ForestTheme}};
+
+pub trait MapTheme: Sync + Send {
+    fn tile_to_render(&self, tile_type: TileType) -> FontCharType;
+}
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> CrawlerMapBuilder;
 }
@@ -20,6 +25,7 @@ pub struct CrawlerMapBuilder {
     pub monster_spawn: Vec<Point>,
     pub player_start: Point,
     pub amulet_start: Point,
+    pub theme: Box <dyn MapTheme>
 }
 impl CrawlerMapBuilder {
     fn fill(&mut self, tile: TileType) {
@@ -34,11 +40,19 @@ impl CrawlerMapBuilder {
             1 => Box::new(RoomArchitect {}),
             _ => Box::new(CellularAutomataBuilder {}),
         };
-
         let mut mb = architect.new(rng);
+        mb.theme = match rng.range(0,2) {
+            0 => DungeonTheme::new(),
+            _ => ForestTheme::new(),
+        };
+
+        
         //let mut mb = CellularAutomataBuilder {};
 
         apply_prefab(&mut mb, rng);
+
+       
+        println!("Theme selected");
         mb
     }
 
@@ -71,6 +85,7 @@ impl CrawlerMapBuilder {
             monster_spawn: Vec::new(),
             player_start: Point::zero(),
             amulet_start: Point::zero(),
+            theme: themes::DungeonTheme::new(),
         }
     }
 

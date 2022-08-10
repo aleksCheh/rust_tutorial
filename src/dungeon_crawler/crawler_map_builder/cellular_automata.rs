@@ -24,7 +24,7 @@ impl CellularAutomataBuilder {
             }
         }
 
-        println!("Neighbors count: {}", neighbors);
+        //println!("Neighbors count: {}", neighbors);
         neighbors
     }
     fn iteration(&mut self, map: &mut CrawlerMap) {

@@ -56,10 +56,11 @@ impl State {
             .monster_spawn
             .iter()
             .for_each(|pos| spawn_enemy(&mut ecs, &mut rng, *pos));
-
+        println!("Start inserting recources");
         resources.insert(crawlerMapBuilder.map);
         resources.insert(Camera::new(crawlerMapBuilder.player_start));
         resources.insert(TurnState::AwaitingInput);
+        resources.insert(crawlerMapBuilder.theme);
 
         State {
             ecs: ecs,
@@ -119,6 +120,7 @@ impl State {
         self.resources
             .insert(Camera::new(crawlerMapBuilder.player_start));
         self.resources.insert(TurnState::AwaitingInput);
+        self.resources.insert(crawlerMapBuilder.theme);
     }
 }
 

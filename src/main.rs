@@ -1,3 +1,5 @@
+use std::env;
+
 use bracket_lib::prelude::*;
 //use std::io::{stdin, Read};
 mod sprite;
@@ -172,6 +174,7 @@ impl GameState for State {
 fn main() /*-> BError*/
 {
     //sprite::main().unwrap();
+    env::set_var("RUST_BACKTRACE", "1");
     match dungeon_crawler::main() {
         Ok(_res) => println!("Ok"),
         Err(e) => println!("Error: {}", e.to_string()),
