@@ -1,12 +1,15 @@
-pub mod cellular_automata;
-pub mod drunkards_walk;
+mod cellular_automata;
+mod drunkards_walk;
+mod empty;
+mod prefab;
 mod room_architect;
-pub mod empty;
 
 use crate::dungeon_crawler::prelude::*;
 use cellular_automata::*;
 use drunkards_walk::*;
 use room_architect::*;
+
+use self::prefab::apply_prefab;
 
 trait MapArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> CrawlerMapBuilder;
@@ -19,27 +22,25 @@ pub struct CrawlerMapBuilder {
     pub amulet_start: Point,
 }
 impl CrawlerMapBuilder {
-    
     fn fill(&mut self, tile: TileType) {
         self.map.tiles.iter_mut().for_each(|t| {
             *t = tile;
         });
     }
 
-
     pub fn new(rng: &mut RandomNumberGenerator) -> Self {
+        let mut architect: Box<dyn MapArchitect> = match rng.range(0, 3) {
+            0 => Box::new(DrunkardsWalkArchitect {}),
+            1 => Box::new(RoomArchitect {}),
+            _ => Box::new(CellularAutomataBuilder {}),
+        };
 
-            // let mut architect: Box<dyn MapArchitect> = match rng.range(0,3) {
-            //     0 => Box::new(DrunkardsWalkArchitect{}),
-            //     1 => Box::new(RoomArchitect{}),
-            //     _ => Box::new(CellularAutomataBuilder{}),
-            // };
-            
-            // let mut mb =  architect.new(rng);
-            let mut mb = CellularAutomataBuilder{}; 
-            mb.new(rng)
-        }
-    
+        let mut mb = architect.new(rng);
+        //let mut mb = CellularAutomataBuilder {};
+
+        apply_prefab(&mut mb, rng);
+        mb
+    }
 
     pub fn find_most_distant(&self) -> Point {
         let dijkstra_map = DijkstraMap::new(
@@ -97,4 +98,3 @@ impl CrawlerMapBuilder {
         spawns
     }
 }
-

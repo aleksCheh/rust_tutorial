@@ -1,13 +1,15 @@
-
-use crate::dungeon_crawler::prelude::*;
 use super::MapArchitect;
+use crate::dungeon_crawler::prelude::*;
 pub struct RoomArchitect {}
 
 const NUM_ROOMS: usize = 20;
 
 impl RoomArchitect {
-
-    fn build_randorm_rooms(&mut self, rng: &mut RandomNumberGenerator, map: &mut CrawlerMap) -> Vec<Rect>{
+    fn build_randorm_rooms(
+        &mut self,
+        rng: &mut RandomNumberGenerator,
+        map: &mut CrawlerMap,
+    ) -> Vec<Rect> {
         let mut rooms: Vec<Rect> = Vec::new();
         while rooms.len() < NUM_ROOMS {
             let room = Rect::with_size(
@@ -30,7 +32,7 @@ impl RoomArchitect {
                     }
                 });
                 rooms.push(room);
-            }            
+            }
         }
         rooms
     }
@@ -53,7 +55,12 @@ impl RoomArchitect {
         }
     }
 
-    fn build_corridors(&mut self, rng: &mut RandomNumberGenerator, rms: &Vec<Rect>, map: &mut CrawlerMap) {
+    fn build_corridors(
+        &mut self,
+        rng: &mut RandomNumberGenerator,
+        rms: &Vec<Rect>,
+        map: &mut CrawlerMap,
+    ) {
         let mut rooms = rms.clone();
         rooms.sort_by(|a, b| a.center().x.cmp(&b.center().x));
 
@@ -72,7 +79,7 @@ impl RoomArchitect {
     }
 }
 
-impl MapArchitect for RoomArchitect{
+impl MapArchitect for RoomArchitect {
     fn new(&mut self, rng: &mut RandomNumberGenerator) -> CrawlerMapBuilder {
         println!("Room architect new");
         let mut map_builder = CrawlerMapBuilder::gen_clean_builder();

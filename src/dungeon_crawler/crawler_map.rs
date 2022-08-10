@@ -1,7 +1,7 @@
 use crate::dungeon_crawler::prelude::*;
 
 const NUM_TILES: usize = (SCREEN_HEIGHT * SCREEN_WIDTH) as usize;
-const DESIRED_TILES:usize = NUM_TILES / 3;
+const DESIRED_TILES: usize = NUM_TILES / 3;
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum TileType {
