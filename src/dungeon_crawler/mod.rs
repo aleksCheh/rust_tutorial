@@ -55,7 +55,7 @@ impl State {
         crawlerMapBuilder
             .monster_spawn
             .iter()
-            .for_each(|pos| spawn_enemy(&mut ecs, &mut rng, *pos));
+            .for_each(|pos| spawn_entity(&mut ecs, &mut rng, *pos));
         println!("Start inserting recources");
         resources.insert(crawlerMapBuilder.map);
         resources.insert(Camera::new(crawlerMapBuilder.player_start));
@@ -115,7 +115,7 @@ impl State {
         crawlerMapBuilder
             .monster_spawn
             .iter()
-            .for_each(|pos| spawn_enemy(&mut self.ecs, &mut rng, *pos));
+            .for_each(|pos| spawn_entity(&mut self.ecs, &mut rng, *pos));
         self.resources.insert(crawlerMapBuilder.map);
         self.resources
             .insert(Camera::new(crawlerMapBuilder.player_start));

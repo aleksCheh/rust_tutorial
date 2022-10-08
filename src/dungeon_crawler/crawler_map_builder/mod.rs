@@ -10,8 +10,10 @@ use cellular_automata::*;
 use drunkards_walk::*;
 use room_architect::*;
 
-
-use self::{prefab::apply_prefab, themes::{DungeonTheme, ForestTheme}};
+use self::{
+    prefab::apply_prefab,
+    themes::{DungeonTheme, ForestTheme},
+};
 
 pub trait MapTheme: Sync + Send {
     fn tile_to_render(&self, tile_type: TileType) -> FontCharType;
@@ -25,7 +27,7 @@ pub struct CrawlerMapBuilder {
     pub monster_spawn: Vec<Point>,
     pub player_start: Point,
     pub amulet_start: Point,
-    pub theme: Box <dyn MapTheme>
+    pub theme: Box<dyn MapTheme>,
 }
 impl CrawlerMapBuilder {
     fn fill(&mut self, tile: TileType) {
@@ -41,17 +43,15 @@ impl CrawlerMapBuilder {
             _ => Box::new(CellularAutomataBuilder {}),
         };
         let mut mb = architect.new(rng);
-        mb.theme = match rng.range(0,2) {
+        mb.theme = match rng.range(0, 2) {
             0 => DungeonTheme::new(),
             _ => ForestTheme::new(),
         };
 
-        
         //let mut mb = CellularAutomataBuilder {};
 
         apply_prefab(&mut mb, rng);
 
-       
         println!("Theme selected");
         mb
     }
