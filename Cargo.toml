@@ -10,6 +10,6 @@ name = "hw_rust_lib"
 crate_type = ["dylib"]
 
 [dependencies]
-bracket-lib = "~0.8.1"
+bracket-lib = "~0.8.7"
 jni = "0.19.0"
 legion = "=0.3.1"
