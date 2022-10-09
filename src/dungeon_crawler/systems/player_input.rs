@@ -42,6 +42,17 @@ pub fn player_input(
             //println!("Down");
             Point::new(0, 1)
         }
+        VirtualKeyCode::Key0 => use_item(9, ecs, commands),
+        VirtualKeyCode::Key1 => use_item(0, ecs, commands),
+        VirtualKeyCode::Key2 => use_item(1, ecs, commands),
+        VirtualKeyCode::Key3 => use_item(2, ecs, commands),
+        VirtualKeyCode::Key4 => use_item(3, ecs, commands),
+        VirtualKeyCode::Key5 => use_item(4, ecs, commands),
+        VirtualKeyCode::Key6 => use_item(5, ecs, commands),
+        VirtualKeyCode::Key7 => use_item(6, ecs, commands),
+        VirtualKeyCode::Key8 => use_item(7, ecs, commands),
+        VirtualKeyCode::Key9 => use_item(8, ecs, commands),
+
         VirtualKeyCode::G => {
             let (player, player_pos) = players
                 .iter(ecs)
@@ -54,8 +65,6 @@ pub fn player_input(
                 commands.remove_component::<Point>(*entity);
                 commands.add_component(*entity, Carried(player));
             });
-
-
             Point::new(0,0)
         }
         _ => {
@@ -71,7 +80,7 @@ pub fn player_input(
         .unwrap();
     let mut monsters = <(Entity, &Point)>::query().filter(component::<Enemy>());
 
-    let mut did_something = false;
+    //let mut did_something = false;
     if delta.x != 0 || delta.y != 0 {
         let mut hit_someone = false;
 
@@ -80,7 +89,7 @@ pub fn player_input(
             .filter(|(_, pos)| **pos == destination)
             .for_each(|(entity, _)| {
                 hit_someone = true;
-                did_something = true;
+                //did_something = true;
                 commands.push((
                     (),
                     WantsToAttack {
@@ -89,7 +98,7 @@ pub fn player_input(
                     },
                 ));
             });
-        println!("Hit someone: {}", hit_someone);
+        //println!("Hit someone: {}", hit_someone);
 
         if !hit_someone {
             commands.push((
@@ -99,16 +108,7 @@ pub fn player_input(
                     destination,
                 },
             ));
-            did_something = true;
-        }
-    }
-    if !did_something {
-        if let Ok(mut health) = ecs
-            .entry_mut(player_entity)
-            .unwrap()
-            .get_component_mut::<Health>()
-        {
-            health.current = i32::min(health.max, health.current + 1);
+            //did_something = true;
         }
     }
 

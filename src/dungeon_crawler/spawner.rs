@@ -81,6 +81,7 @@ pub fn spawn_map(ecs: &mut World, pos: Point) {
             glyph: to_cp437('{'),
         },
         Name("Dungeon Map".to_string()),
+        ProvidesDungeonMap,
     ));
 }
 

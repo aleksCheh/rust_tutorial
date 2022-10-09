@@ -10,6 +10,7 @@ mod movement;
 mod player_input;
 mod random_move;
 mod tooltips;
+mod use_item;
 
 pub use crate::dungeon_crawler::prelude::*;
 pub use chasing::*;
@@ -23,6 +24,7 @@ pub use movement::*;
 pub use player_input::*;
 pub use random_move::*;
 pub use tooltips::*;
+pub use use_item::*;
 
 pub fn build_input_scheduler() -> Schedule {
     Schedule::builder()
@@ -40,6 +42,7 @@ pub fn build_player_scheduler() -> Schedule {
     return Schedule::builder()
         .add_system(combat::combat_system())
         .flush()
+        .add_system(use_item::use_item_system())
         .add_system(movement::movement_system())
         .flush()
         .add_system(fov::fov_system())
@@ -58,6 +61,7 @@ pub fn build_monster_scheduler() -> Schedule {
         //.add_system(random_move::random_move_system())
         .add_system(chasing::chasing_system())
         .flush()
+        .add_system(use_item::use_item_system())
         .add_system(combat::combat_system())
         .flush()
         .add_system(movement::movement_system())
