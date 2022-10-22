@@ -30,6 +30,8 @@ mod prelude {
 
 //use std::thread::spawn;
 
+use std::sync::Arc;
+
 use self::prelude::*;
 
 struct State {
@@ -49,9 +51,12 @@ impl State {
         let mut resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
         #[allow(non_snake_case)]
-        let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
+        let mut crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
         spawn_player(&mut ecs, crawlerMapBuilder.player_start);
-        spawn_amulet(&mut ecs, crawlerMapBuilder.amulet_start);
+        let exit_idx = crawlerMapBuilder
+        .map
+        .point2d_to_index(crawlerMapBuilder.amulet_start);
+        crawlerMapBuilder.map.tiles[exit_idx] = TileType::Exit;
         crawlerMapBuilder
             .monster_spawn
             .iter()
@@ -109,9 +114,13 @@ impl State {
         self.resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
         #[allow(non_snake_case)]
-        let crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
+        let mut crawlerMapBuilder = CrawlerMapBuilder::new(&mut rng);
         spawn_player(&mut self.ecs, crawlerMapBuilder.player_start);
-        spawn_amulet(&mut self.ecs, crawlerMapBuilder.amulet_start);
+        //spawn_amulet(&mut self.ecs, crawlerMapBuilder.amulet_start);
+        let exit_idx = crawlerMapBuilder
+            .map
+            .point2d_to_index(crawlerMapBuilder.amulet_start);
+        crawlerMapBuilder.map.tiles[exit_idx] = TileType::Exit;
         crawlerMapBuilder
             .monster_spawn
             .iter()
@@ -122,6 +131,51 @@ impl State {
         self.resources.insert(TurnState::AwaitingInput);
         self.resources.insert(crawlerMapBuilder.theme);
     }
+    pub fn advance_level(&mut self) {
+        let player_entity = *<Entity>::query().filter(component::<Player>()).iter(&mut self.ecs).nth(0).unwrap();
+        use std::collections::HashSet;
+        let mut entities_to_keep = HashSet::new();
+        entities_to_keep.insert(player_entity);
+        <(Entity, &Carried)>::query().iter(&self.ecs).filter(|(_e, carry)| carry.0 == player_entity)
+        .map(|(e, _carry)| *e).for_each(|e| {entities_to_keep.insert(e);});
+
+        let mut cb = CommandBuffer::new(&mut self.ecs);
+        for e in <Entity>::query().iter(&self.ecs) {
+            if !entities_to_keep.contains(e) {
+                cb.remove(*e);
+            }
+        }
+        cb.flush(&mut self.ecs);
+        <&mut FieldOfView>::query().iter_mut(&mut self.ecs).for_each(|f| f.is_dirty = true);
+        let mut rng = RandomNumberGenerator::new();
+        let mut map = CrawlerMapBuilder::new(&mut rng);
+
+        let mut map_level = 0;
+        <(&mut Player, &mut Point)>::query().iter_mut(&mut self.ecs)
+        .for_each(|(player, pos)|{
+            player.map_level += 1;
+            map_level = player.map_level;
+            pos.x = map.player_start.x;
+            pos.y = map.player_start.y;
+        });
+
+        if map_level == 2 {
+            spawn_amulet(&mut self.ecs, map.amulet_start);
+        } else {
+            let idx = map.map.point2d_to_index(map.amulet_start);
+            map.map.tiles[idx] == TileType::Exit; 
+        }
+
+        map.monster_spawn
+            .iter()
+            .for_each(|pos| spawn_entity(&mut self.ecs, &mut rng, *pos));
+        self.resources.insert(map.map);
+        self.resources
+            .insert(Camera::new(map.player_start));
+        self.resources.insert(TurnState::AwaitingInput);
+        self.resources.insert(map.theme);
+    }
+
 }
 
 impl GameState for State {
@@ -152,6 +206,9 @@ impl GameState for State {
             }
             TurnState::Victory => {
                 self.victory(ctx);
+            }
+            TurnState::NextLevel => {
+                self.advance_level();
             }
         }
         render_draw_buffer(ctx).expect("Render Error!");

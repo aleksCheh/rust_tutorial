@@ -1,4 +1,3 @@
-
 use crate::dungeon_crawler::prelude::*;
 
 #[system]
@@ -8,7 +7,6 @@ use crate::dungeon_crawler::prelude::*;
 #[write_component(Health)]
 #[read_component(Item)]
 #[read_component(Carried)]
-
 
 pub fn player_input(
     ecs: &mut SubWorld,
@@ -56,16 +54,18 @@ pub fn player_input(
         VirtualKeyCode::G => {
             let (player, player_pos) = players
                 .iter(ecs)
-                .find_map(|(entity, pos)| Some((*entity, *pos))).unwrap();
-            
+                .find_map(|(entity, pos)| Some((*entity, *pos)))
+                .unwrap();
+
             let mut items = <(Entity, &Item, &Point)>::query();
-            items.iter(ecs)
-            .filter(|(entity, _, &item_pos)| item_pos == player_pos)
-            .for_each(|(entity, _, _)| {
-                commands.remove_component::<Point>(*entity);
-                commands.add_component(*entity, Carried(player));
-            });
-            Point::new(0,0)
+            items
+                .iter(ecs)
+                .filter(|(entity, _, &item_pos)| item_pos == player_pos)
+                .for_each(|(entity, _, _)| {
+                    commands.remove_component::<Point>(*entity);
+                    commands.add_component(*entity, Carried(player));
+                });
+            Point::new(0, 0)
         }
         _ => {
             // println!("Something else");
@@ -73,7 +73,6 @@ pub fn player_input(
         }
     };
 
-    
     let (player_entity, destination) = players
         .iter(ecs)
         .find_map(|(entity, pos)| Some((*entity, *pos + delta)))
@@ -116,20 +115,25 @@ pub fn player_input(
 }
 
 fn use_item(n: usize, ecs: &mut SubWorld, commands: &mut CommandBuffer) -> Point {
-    let player_entity  = <(Entity, &Player)>::query()
-    .iter(ecs)
-    .find_map(|(entity, _)| Some(*entity)).unwrap();
-    
-    let item_entity = <(Entity, &Item, &Carried)>::query()
-    .iter(ecs).filter(|(_, _, carried)| carried.0 == player_entity)
-    .enumerate().filter(|(item_count, (_,_,_))| *item_count == n)
-    .find_map(|(_,(item_entity, _, _))| Some(*item_entity));
-    if let Some(item_entity) = item_entity {
-        commands.push(((), ActivateItem {
-            used_by: player_entity,
-            item: item_entity
-        } ));
+    let player_entity = <(Entity, &Player)>::query()
+        .iter(ecs)
+        .find_map(|(entity, _)| Some(*entity))
+        .unwrap();
 
+    let item_entity = <(Entity, &Item, &Carried)>::query()
+        .iter(ecs)
+        .filter(|(_, _, carried)| carried.0 == player_entity)
+        .enumerate()
+        .filter(|(item_count, (_, _, _))| *item_count == n)
+        .find_map(|(_, (item_entity, _, _))| Some(*item_entity));
+    if let Some(item_entity) = item_entity {
+        commands.push((
+            (),
+            ActivateItem {
+                used_by: player_entity,
+                item: item_entity,
+            },
+        ));
     }
     Point::zero()
 }
