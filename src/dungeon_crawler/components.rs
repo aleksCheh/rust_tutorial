@@ -8,8 +8,8 @@ pub struct Render {
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
-pub struct Player {
-    pub map_level: i32,
+pub struct Player{
+    pub map_level: i32 = 0,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -86,5 +86,5 @@ pub struct Carried(pub Entity);
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct ActivateItem {
     pub used_by: Entity,
-    pub item: Entity,
+    pub item: Entity
 }
