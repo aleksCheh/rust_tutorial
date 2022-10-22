@@ -9,7 +9,7 @@ pub struct Render {
 
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub struct Player{
-    pub map_level: i32 = 0,
+    pub map_level: i32,
 }
 
 #[derive(Clone, Copy, PartialEq, Debug)]
@@ -88,3 +88,8 @@ pub struct ActivateItem {
     pub used_by: Entity,
     pub item: Entity
 }
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Damage(pub i32);
+#[derive(Clone, Copy, PartialEq, Debug)]
+pub struct Weapon;

@@ -14,7 +14,7 @@ pub fn player_input(
     #[resource] key: &Option<VirtualKeyCode>,
     #[resource] turn: &mut TurnState,
 ) {
-    static mut frame: i32 = 0;
+    //static mut frame: i32 = 0;
     let mut players = <(Entity, &Point)>::query().filter(component::<Player>());
     // let mut cfrm: i32 = 0;
     // unsafe {frame += 1; frm = frame;}

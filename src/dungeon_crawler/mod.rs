@@ -57,10 +57,8 @@ impl State {
         .map
         .point2d_to_index(crawlerMapBuilder.amulet_start);
         crawlerMapBuilder.map.tiles[exit_idx] = TileType::Exit;
-        crawlerMapBuilder
-            .monster_spawn
-            .iter()
-            .for_each(|pos| spawn_entity(&mut ecs, &mut rng, *pos));
+        spawn_level(&mut ecs, &mut rng , 0, &crawlerMapBuilder.monster_spawn);
+        
         println!("Start inserting recources");
         resources.insert(crawlerMapBuilder.map);
         resources.insert(Camera::new(crawlerMapBuilder.player_start));
@@ -121,16 +119,15 @@ impl State {
             .map
             .point2d_to_index(crawlerMapBuilder.amulet_start);
         crawlerMapBuilder.map.tiles[exit_idx] = TileType::Exit;
-        crawlerMapBuilder
-            .monster_spawn
-            .iter()
-            .for_each(|pos| spawn_entity(&mut self.ecs, &mut rng, *pos));
+        spawn_level(&mut self.ecs, &mut rng , 0, &crawlerMapBuilder.monster_spawn);
+        
         self.resources.insert(crawlerMapBuilder.map);
         self.resources
             .insert(Camera::new(crawlerMapBuilder.player_start));
         self.resources.insert(TurnState::AwaitingInput);
         self.resources.insert(crawlerMapBuilder.theme);
     }
+    
     pub fn advance_level(&mut self) {
         let player_entity = *<Entity>::query().filter(component::<Player>()).iter(&mut self.ecs).nth(0).unwrap();
         use std::collections::HashSet;
@@ -165,10 +162,8 @@ impl State {
             let idx = map.map.point2d_to_index(map.amulet_start);
             map.map.tiles[idx] == TileType::Exit; 
         }
-
-        map.monster_spawn
-            .iter()
-            .for_each(|pos| spawn_entity(&mut self.ecs, &mut rng, *pos));
+        spawn_level(&mut self.ecs, &mut rng , 0, &map.monster_spawn);
+        
         self.resources.insert(map.map);
         self.resources
             .insert(Camera::new(map.player_start));
