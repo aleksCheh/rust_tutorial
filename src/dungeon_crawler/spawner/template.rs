@@ -3,7 +3,6 @@ use serde::Deserialize;
 use ron::de::from_reader;
 use std::fs::File;
 use std::collections::HashSet;
-use legion::systems::CommandBuffer;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Template{
@@ -35,6 +34,7 @@ impl Templates {
 
     pub fn spawn_entities(&self, ecs: &mut World, rng: &mut RandomNumberGenerator, level: usize, spawn_points: &[Point]) {
         let mut availible_entities = Vec::new();
+        println!("Current level is: {}", level);
         self.entities.iter().filter(|e| e.levels.contains(&level))
         .for_each(|t| {
             for _ in 0 .. t.frequency {
@@ -64,6 +64,7 @@ impl Templates {
                 commands.add_component(entity, Item{})
             },
             EntityType::Enemy => {
+                println!("Enemy name: {}", template.name);
                 commands.add_component(entity, FieldOfView::new(6));
                 commands.add_component(entity, ChasingPlayer{});
                 commands.add_component(entity, Enemy{});
@@ -86,6 +87,13 @@ impl Templates {
                     _ => {println!("Some Unknown Effect !: {}", name);}
                 }
             });
+        }
+
+        if let Some(damage) = &template.base_damage {
+            commands.add_component(entity, Damage(*damage));
+            if template.entity_type == EntityType::Item {
+                commands.add_component(entity, Weapon{});
+            }
         }
     }
 }

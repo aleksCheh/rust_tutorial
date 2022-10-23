@@ -14,10 +14,38 @@ Templates(
         ),
         Template(
             entity_type: Item,
-            name: "Rusty sword", glyph: '/', levels: [0, 1, 2],
+            name: "Rusty sword", glyph: 's', levels: [0, 1, 2],
             provides: Some([ ("Magic map", 0) ]),
             frequency: 1,
             base_damage: Some(1)
+        ),
+        Template(
+            entity_type: Item,
+            name: "Shiny sword", glyph: 'S', levels: [0, 1, 2],
+            provides: Some([ ("Magic map", 0) ]),
+            frequency: 1,
+            base_damage: Some(2)
+        ),
+        Template(
+            entity_type: Item,
+            name: "Huge sword", glyph: '/', levels: [0, 1, 2],
+            provides: Some([ ("Magic map", 0) ]),
+            frequency: 1,
+            base_damage: Some(3)
+        ),
+        Template(
+            entity_type: Enemy,
+            name: "Ogre", glyph: 'O', levels: [0, 1, 2],
+            hp: Some(5),
+            frequency: 2,
+            base_damage: Some(2)
+        ),
+        Template(
+            entity_type: Enemy, 
+            name: "Ettin", glyph: 'E', levels: [0, 1, 2],
+            hp: Some(7) ,
+            frequency: 1 ,
+            base_damage: Some(3)
         ),
         Template(
             entity_type: Enemy,
@@ -33,19 +61,6 @@ Templates(
             frequency: 2 ,
             base_damage: Some(1)
         ),
-        Template(
-            entity_type: Enemy,
-            name: "Ogre", glyph: 'O', levels: [1, 2],
-            hp: Some(5),
-            frequency: 2,
-            base_damage: Some(2)
-        ),
-        Template(
-            entity_type: Enemy, 
-            name: "Ettin", glyph: 'E', levels: [2],
-            hp: Some(7) ,
-            frequency: 1 ,
-            base_damage: Some(3)
-        ),
+        
     ],
 )
