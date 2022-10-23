@@ -155,12 +155,13 @@ impl State {
             pos.x = map.player_start.x;
             pos.y = map.player_start.y;
         });
-
+        // println!("Map level: {}", map_level);
+        // println!("Amulet /stairs position x: {}, y: {}", map.amulet_start.x, map.amulet_start.y);
         if map_level == 2 {
             spawn_amulet(&mut self.ecs, map.amulet_start);
         } else {
             let idx = map.map.point2d_to_index(map.amulet_start);
-            map.map.tiles[idx] == TileType::Exit; 
+            map.map.tiles[idx] = TileType::Exit; 
         }
         spawn_level(&mut self.ecs, &mut rng , 0, &map.monster_spawn);
         
