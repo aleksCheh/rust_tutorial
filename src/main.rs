@@ -184,5 +184,3 @@ fn main() /*-> BError*/
     //     .build()?;
     // main_loop(context, State::new())
 }
-
-//ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDA4v0aiJCGc5yYjf6vJPKScZgcnhd3A+IWDUvTqLZ6RpvoY2xV3OKYv1pxbf05vwGbzc7PqA1vXDrkrYOlfoMpcqndRh5e9EeuW5cWkDZdhofmIVCIa14RoJcV0KMrjVJ3vbVnTWe346vCF1qc4fDKedPQWWNwThAIjorwLJimUJiZb88Bd+cBoJ9O1+xd8FHNJU1Muwkoy7NOMNK0Ye9EysIOOpWlCxZs35wiQaLAFuNfqlRuzaZLueI0wI8in2SC6CtF5X23nAQruP5GbyPqolmwImbov+nJAEIAZ2Z+fPwaHlnuCfmjt5OpqNeuLLAkyxThrvxkxVD18VaIS4hxY+L66lDS6/shQa3gcKoXUeVKpMJaCZYdGrAtPaW/erD/MwIsONd9/pW2LbxY4N5AXGyQHyhWHCcuNAv7O9T28frc0WWMvUGVi4FIDq5ecTmIH6xH4OKugyvIQBc60im/2JwHLfozwicbqX/4ZEY0gQSmjC+Fsaj3Ct2M0Zt2pcs= chekr@DESKTOP-SL6MLO5
